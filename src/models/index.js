@@ -1,34 +1,54 @@
-const { Sequelize, DataTypes } = require("sequelize");
-const BookModel = require("./book");
-const UserModel = require("./user");
-const BorrowedBookModel = require("./borrowed-book");
+// Import the Sequelize instance from the dbConnection module
+let sequelize = require('../dbConnection/dbconnection');
 
-const sequelize = new Sequelize({
-  dialect: "sqlite",
-  storage: "./library.db",
-});
+// Import the Book and User models
+const Book = require('./book');
+const User = require("./user");
+const BorrowedBook = require("./borrowed-book")
 
-sequelize
-  .authenticate()
+
+// Synchronize models with the database
+sequelize.sync({ force: false }) // Set force: true to drop existing tables and recreate them
   .then(() => {
-    console.log("Connection has been established successfully.");
+    console.log('Database synchronized');
   })
-  .then(() => {
-    sequelize.sync({ alter: true });
-  })
-  .catch((error) => {
-    console.error("Unable to connect to the database:", error.message);
+  .catch(err => {
+    console.error('Error synchronizing database:', err);
   });
-
-const models = {
-  Book: BookModel(sequelize, DataTypes),
-  User: UserModel(sequelize, DataTypes),
-  BorrowedBook: BorrowedBookModel(sequelize, DataTypes),
+// Define associations between User and BorrowedBook models
+User.associate = function (models) {
+  User.hasMany(BorrowedBook, {
+    foreignKey: "userId",
+  });
 };
 
-const DB = {
-  ...models,
-  sequelize,
+// Define associations between Book and BorrowedBook models
+Book.associate = function (models) {
+  Book.hasMany(BorrowedBook, {
+    foreignKey: "bookId",
+  });
 };
 
-module.exports = DB;
+BorrowedBook.associate = function (models) {
+  BorrowedBook.belongsTo(Book, {
+    foreignKey: "bookId",
+    onDelete: "CASCADE",
+  });
+  BorrowedBook.belongsTo(User, {
+    foreignKey: "userId",
+    onDelete: "CASCADE",
+  });
+};
+
+// Get all models defined in the sequelize instance
+const models = sequelize.models;
+
+// Log the models to the console (for debugging purposes)
+console.log(models);
+
+// Create an object to store the sequelize instance
+const db = {};
+db.sequelize = sequelize;
+
+// Export the sequelize instance and models for use in other parts of the application
+module.exports = { db, models };

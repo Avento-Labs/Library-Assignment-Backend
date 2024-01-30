@@ -1,4 +1,6 @@
-module.exports = (sequelize, DataTypes) => {
+
+const DataTypes = require('sequelize');
+const sequelize = require('../dbConnection/dbconnection')
   const Book = sequelize.define("Book", {
     title: {
       type: DataTypes.STRING,
@@ -19,11 +21,9 @@ module.exports = (sequelize, DataTypes) => {
     },
   });
 
-  Book.associate = function (models) {
-    Book.hasMany(models.BorrowedBook, {
-      foreignKey: "bookId",
-    });
-  };
-
-  return Book;
-};
+  // Book.associate = function (models) {
+  //   Book.hasMany(models.BorrowedBook, {
+  //     foreignKey: "bookId",
+  //   });
+  // };
+module.exports = Book
