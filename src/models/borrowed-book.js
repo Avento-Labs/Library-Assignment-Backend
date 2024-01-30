@@ -1,5 +1,7 @@
-module.exports = (sequelize, DataTypes) => {
-  const BorrowedBook = sequelize.define("BorrowedBook", {
+
+const DataTypes = require('sequelize');
+const sequelize = require('../dbConnection/dbconnection')
+const BorrowedBook = sequelize.define("BorrowedBook", {
     borrowDate: {
       type: DataTypes.DATE,
       allowNull: false,
@@ -11,16 +13,4 @@ module.exports = (sequelize, DataTypes) => {
     },
   });
 
-  BorrowedBook.associate = function (models) {
-    BorrowedBook.belongsTo(models.Book, {
-      foreignKey: "bookId",
-      onDelete: "CASCADE",
-    });
-    BorrowedBook.belongsTo(models.User, {
-      foreignKey: "userId",
-      onDelete: "CASCADE",
-    });
-  };
-
-  return BorrowedBook;
-};
+module.exports = BorrowedBook
