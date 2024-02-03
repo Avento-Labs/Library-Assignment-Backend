@@ -4,8 +4,13 @@ const UserModel = require("./user");
 const BorrowedBookModel = require("./borrowed-book");
 
 const sequelize = new Sequelize({
-  dialect: "sqlite",
-  storage: "./library.db",
+  "host":"localhost",
+  "port": 5432,
+  "username":"postgres",
+  "password" : "muneeb@12",
+  "database":"BookShelf",
+  "dialect" : "postgres",
+  "logging" : false
 });
 
 sequelize
@@ -30,5 +35,6 @@ const DB = {
   ...models,
   sequelize,
 };
+sequelize.models=models
 
 module.exports = DB;
