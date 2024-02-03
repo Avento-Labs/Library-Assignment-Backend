@@ -1,5 +1,6 @@
 const express = require("express");
 const { User } = require("../models");
+const bcrypt = require("bcryptjs");
 
 const router = express.Router();
 
@@ -16,6 +17,8 @@ router.get("/", async (req, res) => {
 // Add a new user
 router.post("/", async (req, res) => {
   try {
+    // hash password
+    req.body.password = await bcrypt.hash(req.body.password, 10);
     const newUser = await User.create(req.body);
     res.status(201).json(newUser);
   } catch (error) {

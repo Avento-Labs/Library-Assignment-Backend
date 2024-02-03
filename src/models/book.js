@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0,
-    },
+    }
   });
 
   Book.associate = function (models) {
@@ -24,6 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "bookId",
     });
   };
+
 
   return Book;
 };
